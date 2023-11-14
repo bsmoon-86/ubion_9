@@ -29,4 +29,28 @@ df %>% select(-id)
 # 인덱스의 조건과 컬럼의 조건을 모두 사용
 df %>% filter(class == 1) %>% select(math, english)
 
+# Base 
+df[ df$class == 1 , c('math', 'english') ]
+
+# 정렬을 변경(오름차순, 내림차순)
+df %>% arrange(math)
+
+df %>% arrange(desc(math))
+df %>% arrange(-math)
+
+# Base 
+df[order(df$math),]
+
+df[order(df$math, decreasing = TRUE), ]
+df[order(-df$math), ]
+
+# 정렬의 기준이 2개인 경우 
+df  %>%  arrange(desc(class), math)
+
+# 그룹화 연산
+df %>% group_by(class) %>% 
+  summarise(mean_math = mean(math), 
+            mean_english= mean(english), 
+            mean_science = mean(science))
+
 
