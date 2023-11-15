@@ -248,3 +248,106 @@ new_result -> midwest$grade
 # 빈도수 확인 
 table(midwest$grade)
 qplot(midwest$grade)
+
+
+# 결측치 데이터의 처리 
+
+#결측치가 존재하는 데이터프레임 생성
+c1 = c(1, 2, NA, 4, 5)
+c2 = c(1, 2, 3, 4, 5)
+c3 = c(NA, NA, 3, 4, 5)
+
+df <- data.frame(c1, c2, c3)
+df
+
+str(df)
+# 결측치의 존재 유무 
+is.na(df)
+
+# 결측치의 개수를 확인
+table(is.na(df))
+
+# c3 컬럼에 데이터가 결측치인 데이터를 확인
+table(is.na(df$c3))
+df[is.na(df$c3), ]
+df[!is.na(df$c3), ]
+df %>% filter(is.na(c3))
+
+# 결측치가 존재하는 벡터데이터를 연산 
+mean(df$c1)
+mean(df$c2)
+mean(df$c3)
+min(df$c1)
+max(df$c3)
+mean(df$c3, na.rm = T)
+
+df[!is.na(df$c3), ] -> df2
+mean(df2$c3)
+
+# csv_exam.csv 파일 로드 
+read.csv("csv/csv_exam.csv") -> exam
+
+# 데이터프레임에 결측치를 대입
+exam[c(4, 9, 16), 'math'] <- NA
+
+
+table(is.na(exam))
+
+# exam 데이터프레임에서 class별 수학 성적에 평균 값을 출력
+exam %>% 
+  group_by(class) %>% 
+  summarise(mean_math = mean(math, na.rm=T))
+
+exam %>% 
+  filter(!is.na(math)) %>% 
+  group_by(class) %>% 
+  summarise(mean_math = mean(math))
+
+
+# 결측치를 다른 데이터로 변경 
+# 수학 성적의 평균 값으로 해당하는 결측치 대체
+mean(exam$math, na.rm = T) -> mean_math
+
+ifelse(is.na(exam$math), mean_math, exam$math)
+
+exam$math = ifelse(is.na(exam$math), mean_math, exam$math)
+exam
+
+
+mpg <- ggplot2::mpg
+table(is.na(mpg))
+
+str(mpg)
+
+
+# 고속도로 연비 데이터를 기준으로 극단치 확인 
+boxplot(mpg$hwy)
+# boxplot() 극단치의 경계를 수치로 출력
+boxplot(mpg$hwy)$stats
+mpg$hwy < 12 | mpg$hwy > 37 -> flag
+mpg[flag, ]
+ifelse(flag, NA, mpg$hwy) -> mpg$hwy
+
+## 제조사별 고속도로 평균 연비가 어떻게 되는가?
+
+## 제조사별로 그룹화
+
+## 고속도로 연비를 기준으로 그룹화 연산(평균 값)
+
+## 고속도로의 평균 연비가 높은 3개의 제조사를 확인
+
+mpg %>% 
+  group_by(manufacturer) %>% 
+  summarise(mean_hwy = mean(hwy, na.rm=T)) %>% 
+  arrange(-mean_hwy) %>% 
+  head(3)
+
+mpg %>% 
+  filter(!is.na(hwy)) %>% 
+  group_by(manufacturer) %>% 
+  summarise(mean_hwy = mean(hwy)) %>% 
+  arrange(desc(mean_hwy)) %>% 
+  head(3)
+
+
+
