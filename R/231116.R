@@ -178,10 +178,119 @@ ggplot(
   aes(x = gender, y=mean_income)
 ) + geom_col()
 
+## tibble 데이터의 형태를 data.frame 형태로 변경 
+as.data.frame(welfare_copy) -> welfare_copy
 
 
+## 나이에 따른 임금의 차이가 어느정도인가?
+
+## 나이 라는 데이터는 존재하지 않는다. 
+## age 컬럼을 생성하여 현재년도(2015) - birth의 값을 대입
+## income 데이터에서 결측치를 제외
+## age를 기준으로 그룹화
+## 그룹화 연산을 하여 income의 평균 값을 출력
+## 해당 결과를 막대그래프로 출력
+welfare_copy %>% 
+  mutate(age = 2015 - birth) %>% 
+  filter(!is.na(income)) %>% 
+  group_by(age) %>% 
+  summarise(mean_income = mean(income)) -> age_income
+ggplot(
+  data = age_income, 
+  aes(x = age, y = mean_income)
+) + geom_col()
+str(welfare_copy)
+2015 - welfare_copy$birth -> age
+cbind(welfare_copy, age) -> welfare_copy
+welfare_copy$age <- age
+
+## 연령대별 임금의 차이를 확인해보자
+## 연령대 데이터는 존재 하지 않는다. 
+## 연령대(ageg) 컬럼을 생성하여 
+## age가 40 미만이라면 'young'
+## 40이상 60 미만이라면 'middle'
+## 60이상이라면 'old'
+## 데이터를 대입
+## income 데이터 중 결측치를 제외하고 
+## 연령대별로 그룹화
+## 평균 임금 출력 & 막대 그래프 시각화
+welfare_copy %>% 
+  mutate(ageg = ifelse(
+    age < 40, 'young', 
+    ifelse(age < 60, 'middle', 'old')
+  )
+  ) %>% 
+  filter(!is.na(income)) %>% 
+  group_by(ageg) %>% 
+  summarise(mean_income = mean(income)) -> ageg_income
+ageg_income[c(3, 1, 2),]
+ggplot(
+  data = ageg_income, 
+  aes(x = ageg, y = mean_income)
+) + geom_col()
+
+## 그래프의 순서를 young, middle, old 순으로 바꿔서 출력
+
+ggplot(
+  data = ageg_income, 
+  aes(x = ageg, y = mean_income)
+) + geom_col() + scale_x_discrete(
+  limits = c('young', 'middle', 'old')
+)
+
+welfare_copy %>% 
+  mutate(ageg = ifelse(
+    age < 40, 'young', 
+    ifelse(age < 60, 'middle', 'old')
+  )
+  ) -> welfare_copy
 
 
+## 연령대와 성별을 기준으로 임금의 평균을 출력하고 그래프 시각화
 
+welfare_copy %>% 
+  filter(!is.na(income)) %>% 
+  group_by(ageg, gender) %>% 
+  summarise(mean_income = mean(income)) -> ageg_gender_income
 
+ggplot(
+  data = ageg_gender_income, 
+  aes(x = ageg, y = mean_income, fill=gender)
+) + geom_col(position = 'dodge') + scale_x_discrete(
+  limits = c('young', 'middle', 'old')
+)
+
+## excel 데이터를 로드하기 위한 패키지 설치 
+install.packages('readxl')
+library(readxl)
+
+read_excel("csv/Koweps_Codebook.xlsx", sheet = 2) -> code_book
+
+## 직업 별 평균 임금 어떠한가?
+
+## welfare_copy와 code_book를 조인 결합(left join) -> job_data
+
+## 결합된 데이터를 이용하여 
+## income이 결측치인 데이터를 제거 
+## 직업명(job)을 기준으로 그룹화 
+## 그룹화 연산 income의 평균 값 출력
+
+## 그룹 데이터를 이용하여 막대 그래프 시각화 
+## (평균 임금이 높은 순으로 표시)
+
+left_join(welfare_copy, code_book, by='code_job') -> job_data
+
+job_data %>% 
+  filter(!is.na(income)) %>% 
+  group_by(job) %>% 
+  summarise(mean_income = mean(income)) -> job_income
+
+job_income %>% 
+  arrange(-mean_income) %>% 
+  head(10) -> top10
+
+ggplot(
+  data = top10, 
+  aes(x = reorder(job, mean_income), y = mean_income)
+) + geom_col() + coord_flip()
 
