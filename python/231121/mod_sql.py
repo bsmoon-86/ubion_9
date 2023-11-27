@@ -2,7 +2,12 @@ import pymysql
 
 class Mydb:
     # 생성자 함수 (매개변수 : host, port, user, password, db)
-    def __init__(self, _host, _port, _user, _password, _db):
+    def __init__(self, 
+                 _host = '127.0.0.1', 
+                 _port = 3306, 
+                 _user = 'root', 
+                 _password = '1234', 
+                 _db = 'ubion'):
         self.host = _host
         self.port = _port
         self.user = _user
