@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Login Page</h1>
+    <!-- 유저가 입력할 수 있는 공간 -->
+    <!-- action은 데이터를 보내줄 주소 -->
+    <!-- method는 데이터를 보내는 방법(get/post) -->
+    <form action="/signin" method="get">
+        <!-- 유저가 데이터를 입력 -->
+        <label>ID</label>
+        <input type="text" name="input_id"><br>
+        <label>PASSWORD</label>
+        <input type="password" name="input_pass"><br>
+        <!-- 입력한 데이터를 제출 -->
+        <input type="submit">
+    </form>
+</body>
+</html>
