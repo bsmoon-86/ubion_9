@@ -43,7 +43,7 @@ def signin():
     # DB server에서 유저의 정보를 확인하여 로그인 성공/실패 
     # mod_sql에 있는 Mydb class 생성
     mydb = ms.Mydb(
-        '172.16.12.155', 
+        '172.16.11.155', 
         3306, 
         'ubion', 
         '1234', 
@@ -65,7 +65,42 @@ def signin():
     print("SELECT result -", result)
     print(len(result))
     if (result):
-        return "로그인 성공"
+        return render_template('main.html', 
+                               info = result)
+    else:
+        return redirect('/login')
+# localhost:3000/signin2 [post] 방식으로 요청이 들어오는 경우
+@app.route('/signin2', methods=['post'])
+def signin2():
+    id = request.form['input_id']
+    password = request.form['input_pass']
+    print(id)
+    print(password)
+    mydb = ms.Mydb(
+        '172.16.11.155', 
+        3306, 
+        'ubion', 
+        '1234', 
+        'ubion'
+    )
+
+    # sql 쿼리문을 작성 
+    sql = """
+        select 
+        * 
+        from 
+        user 
+        where 
+        id = %s 
+        and 
+        password = %s
+    """
+    result = mydb.sql_query(sql, id, password)
+    print("SELECT result -", result)
+    print(len(result))
+    if (result):
+        return render_template('main.html', 
+                               info = result)
     else:
         return redirect('/login')
 

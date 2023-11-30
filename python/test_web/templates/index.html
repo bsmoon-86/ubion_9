@@ -4,15 +4,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ubion</title>
+    <!-- 
+        태그를 기준으로 디자인 
+        class를 기준으로 디자인 
+        id를 기준으로 디자인
+    -->
+    <style>
+        h1 {
+            color : red;
+        }
+        .class1 {
+            background-color: green;
+        }
+        .class2 {
+            font-size: 20px;
+        }
+        #id1 {
+            color : white;
+            background-color: black;
+        }
+    </style>
 </head>
 <body>
     <!-- 글 제목 태그 -->
     <h1>index page</h1>
+    <h1 class = 'class2'>test</h1>
     <!-- 하이퍼링크 -->
-    <a href = '/second'>Second Page 로 이동</a>
+    <a href = '/second' id="id1">Second Page 로 이동</a>
     
-    <a href="https://www.google.com">구글</a>
-    <a href="https://www.naver.com">네이버</a>
+    <a href="https://www.google.com" class="class1 class2">구글</a>
+    <a href="https://www.naver.com" class="class1">네이버</a>
     <!-- 리스트 태그 -->
     <ul>
         <li>list1</li>
